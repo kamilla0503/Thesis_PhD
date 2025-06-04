@@ -176,7 +176,13 @@
 %  	Z =\sum_{u} \sum_s e ^{-\frac{H(s,u)}{k T} }.
 %  	\label{Zcanonical_ising}
 %  \end{equation}
-   
+  
+Средняя намагниченность на спин в модели Изинга определяется как среднее по спиновым состояниям:
+   \begin{equation}
+ 	\label{ising_mean_magnetization}
+ \langle m \rangle = \frac{1}{N} \langle \sum_i s_i \rangle. 
+ \end{equation}
+ 
  
  
   \subsection{  Модель XY на динамических структурах}\label{sub2:sec:1_ch:1}
@@ -215,6 +221,30 @@
   	%\prod_{j=2}^{N}  \int_{-\pi}^{\pi} d \theta_j^{'} e ^{J(cos\theta_j^{'})} 
   \end{equation} 
  
+ 
+ Средняя намагниченность на спин в модели XY определяется как среднее по спиновым состояниям:
+ \begin{equation}
+ 	\label{xy_mean_magnetization}
+ 	\langle m \rangle = \sqrt{      \frac{1}{N}   \langle  ( \sum_i^N \cos \theta_i  )^2      + ( \sum_i^N   N \sin \theta_i   )^2             \rangle    }. 
+ \end{equation}
+ 
+ 
+ 
+ 
+ \subsection{Фазовые переходы в спиновых системах} 
+ 
+ 
+Для определения типа фазового перехода используются кумулянты Биндера четвертого порядка для намагниченности \eqref{xy_mean_magnetization},  \eqref{ising_mean_magnetization} \cite{PhysRevLett.47.693}: 
+
+
+  \begin{equation}
+ 	\label{binder_cumulant}
+  U_4 = 1 - \frac{ 	\langle m^4 \rangle  }{ 3 	\langle m^2 \rangle ^2 }. 
+ \end{equation}
+ 
+ Критерий перехода второго рода: кривые $U_4^N(J)$ для систем разного размера $N$ пересекаются в одной точке $J_{critical}$.   Критерий для фазового перехода первого рода: кривые кумулянта имеют отрицательный минимум \cite{PhysRevB.30.1477}. 
+ 
+ 
 
  \section{ Виды взаимодействий в спиновых моделях }\label{sec:3_ch:1}
 
@@ -245,7 +275,6 @@
  В моделях с ближним взаимодействием --- взаимодействуют только ближайшие спины на решетке, то есть только такие пары спинов, для которых расстояния равно единице  $r_{i,j}=1$. 
  
  Модели с близким взаимодействием являются предельным случаем дальнодействия  \eqref{eq:hamiltonian_xy_longrange}: $\sigma \rightarrow \infty $,  так как вклад от отдалённых спинов становится пренебрежимо мал.
- 
  
  
  
