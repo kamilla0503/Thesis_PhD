@@ -30,7 +30,7 @@
 
 \begin{document}
 	
-	\tableofcontents
+\tableofcontents
 
 % calculate your papers
 \input{biblio/calcrefs}
@@ -68,12 +68,12 @@
 %}{\counterwithin{figure}{chapter}}
 %\ifnumequal{\value{contnumtab}}{1}{\counterwithout{table}{chapter}
 %}{\counterwithin{table}{chapter}}
-
+\include{Dissertation/chapter0}           % Глава 0
 \include{Dissertation/chapter1}           % Глава 1
 \include{Dissertation/chapter2}           % Глава 2
 \include{Dissertation/chapter3}           % Глава 3
 \include{Dissertation/chapter4}           % Глава 4
-\include{Dissertation/chapter5}           % Глава 5
+%\include{Dissertation/chapter5}           % Глава 5
 
 \include{Dissertation/conclusion}      % Заключение
 %\include{Dissertation/acronyms}        % Список сокращений и условных обозначений
@@ -94,6 +94,9 @@
 %\include{Dissertation/appendix}        % Приложения, тут же свои публикации
 
 %\setcounter{totalappendix}{\value{chapter}} % Подсчёт количества приложений
+
+
+
 
 
 %\begin{refsection}[biblio/references.bib]
