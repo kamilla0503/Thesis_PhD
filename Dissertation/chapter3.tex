@@ -56,7 +56,6 @@ $  \mathcal{R} (N, J)= \frac{	\langle R_N^2 \rangle }{N ^ {2 \nu _ {\Theta}}} $ 
 	\centering
 	\includegraphics[scale=0.25]{images/Ising_2D_rscaling_short.png}
 	\includegraphics[scale=0.25]{images/Ising_2D_rscaling_long.png}
-	%\includegraphics[scale=0.18]{Images/state_example2.png}
 	\caption{ Средний радиус, отмасштабированный с фиксированным \eqref{nu_theta} как функция от $J$.      }
 	\label{fig:ising_2d_rscaling}
 \end{figure}
@@ -73,6 +72,47 @@ $  \mathcal{R} (N, J)= \frac{	\langle R_N^2 \rangle }{N ^ {2 \nu _ {\Theta}}} $ 
 
 Переход клубок-глобула в двумерной полимерной цепочке c Изинговым взаимодействием является непрерывным переходом второго рода. 
 
+\begin{figure}[t]
+	\centering
+	\includegraphics[scale=0.25]{images/Ising_2D_R2_collapse_auto.png}
+	\caption{Коллапс кривых средних радиусов $R^2/N^{2\nu_\Theta}$ при $\nu_\Theta=4/7$ в координатах
+		$X=(J-J_\Theta)N^{\phi_\Theta}$.
+		Параметры коллапса: $J_\Theta=0.832150$, $\phi_\Theta^{\mathrm{eff}}=0.73913$.
+		Вертикальные отрезки показывают статистические ошибки.}
+	\label{fig:R2_collapse}
+\end{figure}
+
+
+Формула \eqref{r_scale_theta} приводит к естественным безразмерным переменным
+\begin{equation}
+	Y(N,J) \equiv \frac{R^2(N,J)}{N^{2\nu_\Theta}},
+	\qquad
+	X(N,J;J_\Theta,\phi_\Theta) \equiv (J-J_\Theta)\,N^{\phi_\Theta}.
+	\label{eq:XY_defs}
+\end{equation}
+При корректных параметрах $(J_\Theta,\phi_\Theta)$ кривые $Y$ для разных $N$ должны накладываться на единую кривую $F(X)$.  Мы используем процедуру перебора параметров на равномерной сетке по $J_\Theta$ и $\phi_\Theta$ для получения максимально согласованного коллапса. Мы фиксируем $\nu_\Theta = 4/7$   \eqref{nu_theta}.  Для каждой длины цепочки $N$ строится
+пара $(X_i^{(N)},Y_i^{(N)})$,
+после чего все кривые интерполируются на общий сет $X=\{x_k\}$.
+Качество коллапса оценивается взвешенной дисперсией
+\begin{equation}
+	\mathcal{C}(J_\Theta,\phi_\Theta)
+	\;=\;
+	\sum_{k}
+	\sum_{N}
+	w_k^{(N)}
+	\Bigl[\,Y^{(N)}(x_k) - \overline{Y}(x_k)\Bigr]^2,
+	\qquad
+	w_k^{(N)} = \frac{1}{\bigl(\sigma^{(N)}(x_k)\bigr)^2},
+	\label{eq:collapse_cost}
+\end{equation}
+где $\overline{Y}(x_k)$ --- взвешенное среднее по $N$ в узле $x_k$.
+ 
+ 
+ На рисунке \ref{fig:R2_collapse} показаны  полученные результаты для коллапса кривых при параметрах $J_\Theta=0.832150$, $\phi_\Theta^{\mathrm{eff}}=0.73913$. 
+ Кривые для разных $N$ практически накладываются друг на друга. Значение $J_\Theta$, полученная поиском максимально согласованного коллапса,  согласуется с оценками по пересечениям \eqref{ising_2d_J_theta} при фиксированном $\nu_\Theta$. 
+ 
+ 
+ Отметим, что полученное значение $\phi_\Theta^{\mathrm{eff}}\approx 0.74$ заметно выше теоретического трикритического значения $3/7\simeq 0.4286$. Однако, завышенные оценки при численном моделировании были также получены и для классического гомополимера $\phi_\Theta^{\mathrm{eff}}\approx 0.48$  \cite{Caracciolo_2011}, хотя и в меньшей степени.  
 
  \subsection{Магнитный переход}
  
@@ -105,6 +145,40 @@ $  \mathcal{R} (N, J)= \frac{	\langle R_N^2 \rangle }{N ^ {2 \nu _ {\Theta}}} $ 
      На рисунке \ref{fig:ising_2d_energy} показано, как средняя энергия на спин  монотонно убывает c ростом энергии взаимодействия $J$. 
      Так, энергетические данные подтверждают магнитный критический переход, согласуясь с поведением второго момента намагниченности.
         
+        
+        
+    \textbf{Теплоемкость}. 
+     Для продолжения анализа фазового магнитного перехода рассмотрим еще одну физическую величину --- теплоемкость: 
+    \begin{equation}
+    	\label{eq:capacity_heat}
+    	C_N(J) \;=\; \frac{\partial \langle E\rangle}{\partial J}
+    	\;=\; \mathrm{Var}(E) \equiv \langle E^2\rangle - \langle E\rangle^2,
+    \end{equation}
+    
+    Удобно работать с удельной величиной $c_N(J)=C_N(J)/N$. При переходе первого рода пик удельной теплоемкости машстабируется следующим образом: 
+    \(
+    c_N^{\max}\sim N^{\alpha} \sim N. 
+        \)   
+    При  непрерывном переходе:
+    \(
+    c_N^{\max}
+    \)
+    растёт сублинейно (логарифмически или степенной  показатель $\alpha<1$) \cite{PhysRevB.34.1841} \cite{Landau_Binder_2021}. 
+    
+        \begin{figure}
+    	\centering
+    	\includegraphics[scale=0.25]{images/ising_heat_c_vs_J.png}
+    	\includegraphics[scale=0.25]{images/ising_heat_cmax_scaling.png}
+    	\caption{ Численные данные для удельной теплоемкости \eqref{eq:capacity_heat}. На левом графике  в качестве ошибок показана верхняя граница. Оценки пиков теплоемкости показаны черными точками для каждой длины цепочки $N$. }
+    	\label{fig:C_vs_J_short}
+    \end{figure} 
+        
+        
+      Полученные компьютерным моделированием кривые удельной теплоемкости \eqref{eq:capacity_heat}  показаны на графике  \ref{fig:C_vs_J_short}. 
+      Максимум удельной теплоемкости монотонно растёт с $N$, но его рост 
+      существенно медленнее линейного (оценка параметра  $\alpha \approx 0.36 \pm 0.05$). Такое поведение согласуется с непрерывным переходом. 
+        
+        
  \textbf{Кумулянты Биндера для намагниченности}.  Для изучения фазового магнитного перехода рассмотрим кумулянт Биндера четвертого порядка для намагниченности  \eqref{binder_cumulant}.  
  
        \begin{figure}
@@ -134,18 +208,13 @@ $  \mathcal{R} (N, J)= \frac{	\langle R_N^2 \rangle }{N ^ {2 \nu _ {\Theta}}} $ 
    
      
  \subsection{Распределения энергии.}
- 
- 
 \begin{figure}[ht!]
  	\centering
  	\includegraphics[scale=0.25]{images/Ising_distrenergy_5000.png}
  	\includegraphics[scale=0.25]{images/Ising_distrenergy_7500.png}
- 	%\includegraphics[scale=0.18]{Images/state_example2.png}
  	\caption{  Распределения энергии на спин для цепочек длины  $N=5000$ (слева)  и  $N=7500$  (справа).}
  	\label{fig:ising_2d_distr_E}
  \end{figure} 
- 
- 
   Для дальнейшего изучения характера фазового перехода мы рассмотрим распределения энергии на спин. На графике  \ref{fig:ising_2d_distr_E}  изображены распределения энергии на спин для цепочек длины  $N=5000$ (слева)  и  $N=7500$  (справа) в интервале, включающем полученные оценки критических точек \eqref{Ising_2d_J_cr}  и  \eqref{ising_2d_J_theta}. Полученные формы распределений являются одномодальными, что соответствует непрерывному фазовому переходу. 
  
  
