@@ -2,6 +2,13 @@
  \chapter{Модель XY на динамических структурах}
  \label{ch:ch4}
  
+ 
+ В этой главе рассматривается модель XY на динамических структурах, а именно на блужданиях без самопересечений (БСП) в двумерном и трёхмерном случаях.
+Анализиру.тся два типа критического поведения: геометрический переход (клубок---глобула, $\Theta$-переход) по геометрическим характеристикам и магнитный переход по моментам намагниченности, энергии и кумулянтам Биндера, а также по распределениям энергии в критической области.
+
+ Результаты прямого численного моделирования опубликованы в статье \cite{rp7y-13mp}. Данные, полученные с использованием параллельного темперинга и последующего перевзвешивания, приведены в диссертации дополнительно  и служат независимой проверкой и валидацией основных выводов, включая устойчивость оценок критических точек и характера переходов.
+ 
+ 
   \section{2D}
  \subsection{Геометрический переход}
  \label{sub:si_xy_2d_geom}
@@ -70,8 +77,8 @@
 
    \begin{figure}[ht!]%
 	\centering
-	\includegraphics[scale=0.25]{images/SI_XY_2D_r2_scale_short.png}
-	\includegraphics[scale=0.25]{images/SI_XY_2D_r2_scale_long.png}
+	\includegraphics[scale=0.25]{images/SI_XY_2D_r2_scale_short_fixed.png}
+	\includegraphics[scale=0.25]{images/SI_XY_2D_r2_scale_long_fixed.png}
 	\caption{  Средний радиус, отмасштабированный с фиксированным \eqref{nu_theta} как функция от $J$.        }
 	\label{fig:si_xy_2d_rscaling}
 \end{figure} 
@@ -98,8 +105,8 @@
  
     \begin{figure}%[ht!]
  	\centering
- 	\includegraphics[scale=0.25]{images/SI_XY_2D_m2_short.png}
- 	\includegraphics[scale=0.25]{images/SI_XY_2D_m2_long.png}
+ 	\includegraphics[scale=0.25]{images/SI_XY_2D_m2_short_fixed.png}
+ 	\includegraphics[scale=0.25]{images/SI_XY_2D_m2_long_fixed.png}
  	\caption{ Второй момент намагниченности    \eqref{xy_mean_magnetization} как функции от  $J$.     }
  	\label{fig:xy_si_2d_mags}
  \end{figure}
@@ -111,15 +118,15 @@
  
      \begin{figure}%[ht!]
  	\centering
- 	\includegraphics[scale=0.25]{images/SI_XY_2D_e1_short.png}
- 	\includegraphics[scale=0.25]{images/SI_XY_2D_e1_long.png}
+ 	\includegraphics[scale=0.25]{images/SI_XY_2D_e1_short_fixed.png}
+ 	\includegraphics[scale=0.25]{images/SI_XY_2D_e1_long_fixed.png}
  	\caption{ Первый момент энергии  как функции от  $J$.     }
  	\label{fig:xy_si_2d_e}
  \end{figure} 
     \begin{figure}[ht!]
  	\centering
- 	\includegraphics[scale=0.25]{images/SI_XY_2D_U4_short.png}
- 	\includegraphics[scale=0.25]{images/SI_XY_2D_U4_long.png}
+ 	\includegraphics[scale=0.25]{images/SI_XY_2D_U4_short_fixed.png}
+ 	\includegraphics[scale=0.25]{images/SI_XY_2D_U4_long_fixed.png}
  	\caption{ Кумулянты Биндера \eqref{binder_cumulant}  как функции от  $J$.     }
  	\label{fig:xy_si_2d_u4}
  \end{figure}  
@@ -223,8 +230,8 @@
  
     \begin{figure}[ht!]%
  	\centering
- 	\includegraphics[scale=0.25]{images/SI_XY_3D_r2_short_scale.png}
- 	\includegraphics[scale=0.25]{images/SI_XY_3D_r2_long_scale.png}
+ 	\includegraphics[scale=0.25]{images/SI_XY_3D_r2_short_scale_fixed.png}
+ 	\includegraphics[scale=0.25]{images/SI_XY_3D_r2_long_scale_fixed.png}
  	%\includegraphics[scale=0.18]{Images/state_example2.png}
  	\caption{  Средний радиус, отмасштабированный с фиксированным \eqref{eq:nu_3D_Jtheta_flory} как функция от $J$. }
  	\label{fig:si_xy_3d_rscaling}
@@ -245,8 +252,8 @@
  
       \begin{figure}%[ht!]
   	\centering
-  	\includegraphics[scale=0.25]{images/SI_XY_3D_m1_short.png}
-  	\includegraphics[scale=0.25]{images/SI_XY_3D_m1_long.png}
+  	\includegraphics[scale=0.25]{images/SI_XY_3D_m1_short_fixed.png}
+  	\includegraphics[scale=0.25]{images/SI_XY_3D_m1_long_fixed.png}
   	%\includegraphics[scale=0.18]{Images/state_example2.png}
   	\caption{ Второй момент намагниченности    \eqref{xy_mean_magnetization} как функции от  $J$.     }
   	\label{fig:xy_si_3d_mags}
@@ -261,8 +268,8 @@
   %Для точной локализации   в последующем анализе будут использованы кумулянты Биндера
    \begin{figure}%[ht!]
   	\centering
-  	\includegraphics[scale=0.25]{images/SI_XY_3D_e1_short.png}
-  	\includegraphics[scale=0.25]{images/SI_XY_3D_e1_long.png}
+  	\includegraphics[scale=0.25]{images/SI_XY_3D_e1_short_fixed.png}
+  	\includegraphics[scale=0.25]{images/SI_XY_3D_e1_long_fixed.png}
   	%\includegraphics[scale=0.18]{Images/state_example2.png}
   	\caption{ Первый момент энергии на спин как функции от  $J$.     }
   	\label{fig:xy_si_3d_e1}
@@ -280,9 +287,8 @@
    
    \begin{figure}
    	\centering
-   	\includegraphics[scale=0.25]{images/SI_XY_3D_U4_short.png}
-   	\includegraphics[scale=0.25]{images/SI_XY_3D_U4_long.png}
-   	%\includegraphics[scale=0.18]{Images/state_example2.png}
+   	\includegraphics[scale=0.25]{images/SI_XY_3D_U4_short_fixed.png}
+   	\includegraphics[scale=0.25]{images/SI_XY_3D_U4_long_fixed.png}
    	\caption{ Кумулянты Биндера \eqref{binder_cumulant}  как функции от  $J$.     }
    	\label{fig:si_xy_3d_u4}
    \end{figure} 
