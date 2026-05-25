@@ -161,9 +161,52 @@
 	\nu = \frac{1}{d} = \frac{1}{3}.
 \end{equation}
 
+
+
+\subsection{Точка структурного перехода}. 
+
+В точке фазового перехода клубок-глобула средний размер полимерной цепочки (определенный через средний радиус/радиус вращения)
+подчиняется следующему закону \cite{Scaling_concepts}:
+\begin{equation}
+	\label{r_scale_theta}
+	\langle R_N^2 \rangle = N ^ {2 \nu _ {\Theta}} \mathcal{R} [  (J - J_{\Theta}) N ^ { 1 / \nu_c}] =  N ^ {2 \nu_ {\Theta}} \mathcal{R} [  (J - J_{\Theta}) N ^ { \phi_ {\Theta} }] , 
+\end{equation} 
+где  $\mathcal{R} [  (J - J_{\Theta}) N ^ { 1 / \nu_c}]$ --- универсальная  безразмерная  функция (crossover function). 
+Показатель $ \phi_ {\Theta}$ ---  это «кроссоверный показатель»,  характеризующий,  как быстро сужается критическая область при росте размера  цепочки.  
+
+ В критической точке $J = J_{\Theta} $ безразмерная величина 
+ $  \mathcal{R} (N, J)= 	\langle R_N^2 \rangle / N ^ {2 \nu _ {\Theta}} $  не зависит от размера системы $N$. 
+ Следовательно, кривые $  \mathcal{R} (N, J)  $ в точке фазового перехода клубок-глобула пересекаются в одной точке для всех  длин $N$ в отсутствие поправок. Для конечных длин цепи пересечения могут смещаться из-за поправок к скейлингу.
  
  
-  %\subsection{Фазовые переходы в полимерных моделях}
+ Формула \eqref{r_scale_theta} приводит к естественным безразмерным переменным \cite{Scaling_concepts}
+ \begin{equation}
+   \mathcal{R}(N, J)  \equiv \frac{ \langle  R^2(N,J) \rangle }{N^{2\nu_\Theta}}   ,
+ 	\qquad
+ 	X(N,J;J_\Theta,\phi_\Theta) \equiv (J-J_\Theta)\,N^{\phi_\Theta}.
+ 	\label{eq:XY_defs}
+ \end{equation} 
+ 
+  В окрестности критической $\Theta$-точки верна скейлинговая форма: 
+  
+   \begin{equation}
+  	\frac{\langle R_N^2\rangle}{N^{2\nu_\Theta}}   \equiv  \mathcal{R}\!\left(x\right),\qquad x=(J-J_\Theta)N^{\phi _{\Theta}}.
+  \end{equation} 
+  
+ Тогда производная $ \mathcal{R} (N, J)$ по параметру взаимодействия $J$ имеет такой вид:
+ \begin{equation}
+ \frac{\partial   \mathcal{R}(N, J)   }{\partial J} =	\mathcal{R}'(x)\,\frac{\partial x}{\partial J}
+ 	= \mathcal{R}'(x)\,N^{\phi_\Theta} .
+ \end{equation}
+ 
+ В критической точке $J=J_\Theta$ (то есть при $x=0$)  используется следующий скейлинг: 
+ \begin{equation}
+ 	\left.
+ 	\frac{\partial  \mathcal{R}(N,J)}{\partial J}
+ 	\right|_{J=J_\Theta} = 
+ 	\mathcal{R}'(0)\,N^{\phi_\Theta} \propto N^{\phi_\Theta}.
+ 	 	\label{eq:phi_in_scaling} 
+ \end{equation} 
   
   \section{Динамическая гидрофобно-полярная (HP) модель полимера}
   \label{sec:2_ch:hp}
@@ -302,21 +345,9 @@
   \left[\prod_{(i,j)\in\mathcal E(u)} e^{\,J\cos(\theta_i-\theta_j)}\right]
   \prod_{i=1}^N \frac{d\theta_i}{2\pi}.
   \end{equation}
-
-%  \begin{equation}
-% 	\label{partitionfunction2}
-% 	Z(J) =  \sum_{u \in \mathcal U_N }  \int_{-\pi}^{\pi}   \frac{   d \theta_1  d \theta_2 \dots   d\theta_N }{ (2 \pi  )^N}
-% 	\prod_{ \langle i, j \rangle  }^{  }   \left[  e ^{    J    \cos(\theta_i - \theta_j)    }     \right] ,            
-%  \end{equation} 
-% 
-% Средняя намагниченность на спин в модели XY определяется как среднее по спиновым состояниям:
-% \begin{equation}
-% 	\label{xy_mean_magnetization}
-% 	\langle m \rangle =   \frac{1}{N}  \sqrt{       \langle  ( \sum_i^N \cos \theta_i  )^2      + ( \sum_i^N    \sin \theta_i   )^2             \rangle    }. 
-% \end{equation}
  
   
- Вектор намагниченности и параметр порядка:
+ Вектор намагниченности и параметр порядка для модели определяются следующим образом:
  \begin{equation}
  		\label{xy_mean_magnetization}
  	\mathbf M(s)=\frac{1}{N}\sum_{i=1}^N (\cos\theta_i,\sin\theta_i),\qquad m(s)=|\mathbf M(s)|,\qquad \langle m\rangle=\frac{1}{Z_N}\sum_{u}\int m(s)\,e^{-H}\,d\mu.
@@ -328,15 +359,61 @@
  + \Big(\sum_{i=1}^N \sin\theta_i\Big)^2 \Big\rangle
   \end{equation}
   
+  
+  Для анализа спинового упорядочения также вводится корреляционная функция
+  спинов от евклидова расстояния \cite{Berezinskii1970ZhETF}, \cite{kosterlitz1973ordering}, которая определяется следующим образом: 
+  \begin{equation}
+  	\label{xy_spin_correlation}
+  	G(r)
+  	=
+  	\left\langle
+  	\frac{1}{n_u(r)}
+  	\sum_{(i,j)\in \mathcal P_u(r)}
+  	\cos(\theta_i-\theta_j)
+  	\right\rangle ,
+  \end{equation} 
+  где $
+  	\mathcal P_u(r)
+  	=	\{(i,j): i<j,\; |r_i-r_j|\in [r,r+\Delta r)\}  $ --- множество всех пар узлов $(i,j)$ фиксированной 
+  	конформации $u$, расстояние между которыми попадает в интервал
+  	$[r,r+\Delta r)$.
+  	Величина $n_u(r)=|\mathcal P_u(r)|$  --- число таких пар, которое используется для нормировки усреднения. 
+  	
+  	
+  	Отметим, что в классической двумерной модели XY на регулярной решётке
+  	переход БКТ  не связан с возникновением дальнего порядка. 
+  	В низкотемпературной фазе спиновые корреляции убывают
+  	степенным образом от расстояния:
+  	\begin{equation}
+  		\label{xy_bkt_power_law}
+  		G(r)\sim r^{-\eta(J)}, \qquad J>J_{\mathrm{BKT}}. 
+  	\end{equation}
+  	В неупорядоченной фазе убывание экспоненциальное:
+  	\begin{equation}
+  		\label{xy_bkt_exponential}
+  		G(r)\sim \exp\!\left(-\frac{r}{\xi}\right),
+  		\qquad J<J_{\mathrm{BKT}} .
+  	\end{equation}
+  	
+  	В точке фазового БКТ-перехода критический показатель корреляционной функции
+  	принимает универсальное значение: 
+  	\begin{equation}
+  		\label{xy_bkt_eta}
+  		\eta(J_{\mathrm{BKT}})=\frac{1}{4},
+  		\qquad
+  		G(r)\sim r^{-1/4}.
+  	\end{equation} 
+  
+  
  \subsection{Фазовые переходы в спиновых системах} 
  
- % Определения экспонент
- % ν_SAW: геометрический (R ~ N^{ν_SAW})
- % ν_spin: спиновый (ξ ~ |J-J_c|^{-ν_spin})
  \newcommand{\nuSAW}{\nu_{\mathrm{SAW}}}
  \newcommand{\nuSpin}{\nu_{\mathrm{spin}}}
  \newcommand{\nuEff}{\nu_{\mathrm{eff}}}
  
+ 
+  
+ \textbf{Кумулянты Биндера}. 
 Для определения типа фазового перехода используются кумулянты Биндера четвертого порядка для намагниченности \eqref{xy_mean_magnetization},  \eqref{ising_mean_magnetization} \cite{PhysRevLett.47.693}: 
 
 
@@ -345,37 +422,197 @@
   U_4 = 1 - \frac{ 	\langle m^4 \rangle  }{ 3 	\langle m^2 \rangle ^2 }. 
  \end{equation}
  
- Критерий перехода второго рода: кривые $U_4^N(J)$ для систем разного размера $N$ пересекаются в одной точке $J_{critical}$.   
- 
+Для непрерывного фазового перехода кривые $U_4(J,N)$ для 
+разных длин цепочек $N$ пересекаются в окрестности критического значения
+$J_{critical}$. Для пары размеров $N_1$ и $N_2$ точка пересечения определяется как $U_4(J_\times,N_1) =	U_4(J_\times,N_2) = 	U_{4,\times} $.
+В отсутствие конечноразмерных поправок  значения $J_\times$ стремятся к $J_{critical}$ при $N_1,N_2\to\infty$. 
+
+В критической области кумулянт Биндера описывается конечномерной формой
+%
+\begin{equation}
+	\label{binder_scaling_phi}
+	U_4(J,N) \equiv 
+	\mathcal U
+	\left[
+	(J-J_{critical})N^\phi   \equiv   \mathcal U(x) \qquad
+	x=(J-J_{critical})N^\phi,
+	\right],
+\end{equation} 
+
+где $\mathcal U(x)$ --- универсальная безразмерная функция, а $\phi$ --- кроссоверный показатель. Данный показатель, аналогично анализу структурного перехода \eqref{eq:phi_in_scaling}, можно извлечь из наклона кривых кумулянта:
+ \begin{equation}
+	\label{binder_derivative_scaling_phi}
+    \frac{\partial \mathcal U(x)}{\partial J}
+=
+\mathcal U'(x)\frac{\partial x}{\partial J}
+=
+\mathcal U'(x)N^\phi.
+\end{equation}
+
+В самой критической точке $J=J_{critical}$ ($x=0$) выполняется следующий скейлинг:
+\begin{equation}
+	\left.
+	\frac{\partial  \mathcal U(x) }{\partial J}
+	\right|_{J=J_{critical}}
+	=
+	\mathcal U'(0)N^\phi
+	\propto
+	N^\phi.
+\end{equation} 
+В самой критической точке $J=J_{critical}$, то есть при $x=0$, получаем
+%
+\begin{equation}
+	\left.
+	\frac{\partial U_4(N,J)}{\partial J}
+	\right|_{J=J_{critical}}
+	=
+	\mathcal U'(0)N^\phi
+	\propto
+	N^\phi.
+\end{equation}
+
+На практике значение $J_{critical}$ известно только с конечной точностью, а
+кривые $U_4(N,J)$ имеют статистический шум и поправки к масштабированию.
+Поэтому вместо производной строго в точке $J_{critical}$ удобно использовать
+максимальный наклон: $  \left|
+\partial_J U_4
+\right|_{\max}
+\equiv
+\max_J
+\left|
+\frac{\partial U_4(N,J)}{\partial J}
+\right| $ 
+
  Спиновая корреляционная длина в окрестности $J_{critical}$ ведёт себя как
  \[
  \xi(J)\;\sim\; |J-J_{critical}|^{-\nu_{\mathrm{spin}}}.
  \]
  
- На динамической геометрии естественный линейный размер системы — это $N_{\mathrm{eff}}(N)\sim R(N)\sim N^{\nu_{\mathrm{SAW}}}$. 
-  Удобно ввести эффективный показатель по N:
- \[
- \frac{1}{\nuEff} \equiv \frac{\nuSAW}{\nuSpin}
- \quad\Longleftrightarrow\quad
- \nuEff = \frac{\nuSpin}{\nuSAW}.
- \]
-  
- В критической области выполняется  масштабирование 
-\[
-U_4(J,N)
-= \mathcal U\!\Big( (J-J_{critical})\, N^{1/\nuEff} \Big)
-+ \mathcal O\!\big( N^{-\omega_{\mathrm{eff}}} \big),
-\qquad
-\left.\frac{dU_4}{dJ}\right|_{J=J_{critical}} \sim N^{1/\nuEff}.
-\]
-  а само критическое значение $U_4^\star$ зависит от граничных условий и формы системы (т.е. не «универсально» в строгом смысле) \cite{selke2006critical}.
-   Для переходов типа БКТ (модель XY на регулярной квадратной решетке) поведение $U_4$ осложнено логарифмическими поправками \cite{hasenbusch2008binder}. 
+   Для переходов типа БКТ (модель XY на регулярной квадратной решетке) поведение $U_4$ осложнено логарифмическими поправками \cite{hasenbusch2008binder}. Поэтому для двумерных систем с непрерывной
+   симметрией к пересечениям и наклонам $U_4$ следует относиться как к
+   конечномерным диагностическим признакам, а не как к единственному строгому
+   критерию класса универсальности.
   
  
- Критерий для фазового перехода первого рода: кривые кумулянта имеют отрицательный минимум $U_4^{\min}(N)<0$  (связан с бимодальностью распределения энергии)  с углублением по мере роста размера системы $N$ \cite{PhysRevB.30.1477}. 
+ Поэтому для двумерных систем с непрерывной
+ симметрией к пересечениям и наклонам $U_4$ следует относиться как к
+ конечномерным диагностическим признакам, а не как к единственному строгому
+ критерию класса универсальности.
  
  
+ Критерий для фазового перехода первого рода в конечномерной системе: кривые кумулянта имеют отрицательный минимум $U_4^{\min}(N)<0$.  (связан с бимодальностью распределения энергии)  с углублением по мере роста размера системы $N$ \cite{PhysRevB.30.1477}.   Если при увеличении $N$ минимум становится отрицательным и провал усиливается, то это является признаком перехода первого рода.   
  
+ Для количественного описания этого эффекта вводится
+ минимальное значение:
+   \begin{equation}
+ 	\label{binder_minimum}
+ 	U_4^{\min}(N)
+ 	=
+ 	\min_J U_4(J,N), 
+ \end{equation}
+ 
+ а также положение этого минимума:
+ %
+ \begin{equation}
+ 	\label{binder_minimum_position}
+ 	J_{\min}(N)
+ 	=
+ 	\arg\min_J U_4(J,N).
+ \end{equation} 
+ 
+ Величина $J_{\min}(N)$ является псевдокритической точкой для системы конечного
+ размера.
+  Критическое значение параметра взаимодействия определяется как
+ термодинамический предел этой последовательности:
+ %
+ \begin{equation}
+ 	\label{binder_first_order_jcritical}
+ 	J_{critical}
+ 	=
+ 	\lim_{N\to\infty} J_{\min}(N).
+ \end{equation}
+ 
+ 
+     \textbf{Теплоемкость}. 
+ Для  анализа фазового магнитного перехода рассмотрим еще одну физическую величину --- теплоемкость. В каноническом ансамбле теплоёмкость определяется как отклик средней
+ энергии системы на изменение температуры: 
+     \begin{equation}
+ 	\label{eq:capacity_heat}
+ 	C_N(J) \;=\; \frac{\partial \langle E \rangle}{\partial T} = \frac{1}{T^2}
+ 	\left(
+ 	\langle E^2\rangle-\langle E\rangle^2
+ 	\right)
+ 	\;=\; \mathrm{Var}(H) \equiv \langle H^2\rangle - \langle H\rangle^2, 
+ \end{equation} 
+ 
+ где \(E\) — полная энергия системы, а \(H=J E\) — безразмерный
+ гамильтониан в больцмановском весе  \eqref{gibbs}.
+ 
+Удобно работать с удельной величиной $c_N(J)=C_N(J)/N$. При переходе первого рода пик удельной теплоемкости маcштабируется следующим образом: 
+\(
+c_N^{\max}\sim N^{\alpha} \sim N. 
+\)   
+При  непрерывном переходе:
+\(
+c_N^{\max}
+\)
+растёт сублинейно (логарифмически или степенной  показатель $\alpha<1$) \cite{PhysRevB.34.1841} \cite{Landau_Binder_2021} \cite{PhysRevB.43.3265}. 
+
+\subsection{Взаимосвязь геометрии и спинов}
+\label{sec:geom_spin_corr} 
+
+Для совместного анализа геометрической и спиновой подсистемы  можно проанализировать две  характеристики состояния. 
+
+Геометрию конформации характеризует число топологических контактов $С$ --- количество пар
+мономеров $(i,j)$, занимающих ближайшие узлы решётки
+($r_{ij}^2 = 1$) и не являющихся соседями вдоль цепи ($|i-j|>1$).   
+Величина $С(J)$ растёт при сворачивании полимерной цепочки  и обращается в ноль
+для полностью развёрнутых структур, что делает её естественным
+индикатором структурного перехода клубок-глобула. 
+
+ В качестве характеристики спинового упорядочения  удобно использовать модуль намагниченности
+$|m|$ \eqref{ising_mean_magnetization}, \eqref{xy_mean_magnetization},
+играющий роль параметра порядка: $|m|\to 0$ в неупорядоченной фазе
+и $|m|\to 1$ при полном выстраивании спинов.  
+
+
+ Совместная статистика пары $(C, |m|)$ позволяет количественно описать связь между геометрической динамикой цепи и установлением спинового
+упорядочения. 
+
+В каноническом ансамбле при заданном $J$ ковариация определяется как
+\begin{equation}
+	\mathrm{Cov}_J(C,|m|)
+	= \langle C\,|m|\rangle_J - \langle C\rangle_J\,\langle |m|\rangle_J.
+	\label{eq:cov_def}
+\end{equation} 
+
+Соответствующий коэффициент линейной  корреляции Пирсона  $\rho_P(J)$  :
+\begin{equation}
+	\rho_P(J)
+	= \frac{\mathrm{Cov}_J(C,|m|)}
+	{\sqrt{\mathrm{Var}_J(C)\,\mathrm{Var}_J(|m|)}}
+	\in [-1,1].
+	\label{eq:pearson}
+\end{equation} 
+
+Для оценки более общей монотонной
+зависимости вводится ранговый коэффициент Спирмена $\rho_S(J)$,
+определяемый как коэффициент Пирсона для рангов величин $C$ и $|m|$
+в ансамбле при фиксированном$J$.   Для выборки состояний
+$\{(C_k,|m|_k)\}_{k=1}^{M}$ при фиксированном параметре $J$ значения $C_k$ и
+$|m|_k$ заменяются их рангами $R_C(k)$ и $R_m(k)$, после чего
+вычисляется обычный коэффициент Пирсона:
+\begin{equation}
+	\rho_S(J)
+	=
+	\rho_P\bigl(R_C,R_m\bigr).
+	\label{eq:spearman}
+\end{equation}
+При совпадающих значениях используются усреднённые ранги. 
+
+
+
+ Близость значений $\rho_S$,  $\rho_P$  к~$1$ означает, что увеличению $C$ почти всюду соответствует увеличение $|m|$.   
 
  \section{ Виды взаимодействий в спиновых моделях }\label{sec:3_ch:1}
 
