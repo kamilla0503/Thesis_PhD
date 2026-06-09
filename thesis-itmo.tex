@@ -14,6 +14,29 @@
 \input{biblio/biblatex}     % Реализация пакетом biblatex через движок biber
 
 
+
+
+
+\usepackage{totcount}
+\usepackage{etoolbox}
+
+\newtotcounter{thesischapter}
+\newtotcounter{thesisappendix}
+
+\newif\ifinthesisappendix
+\inthesisappendixfalse
+
+\makeatletter
+\pretocmd{\appendix}{\inthesisappendixtrue}{}{}
+
+\pretocmd{\@chapter}{%
+	\ifinthesisappendix
+	\stepcounter{thesisappendix}%
+	\else
+	\stepcounter{thesischapter}%
+	\fi
+}{}{}
+\makeatother
 %%% Управление компиляцией отдельных частей диссертации %%%
 % Необходимо сначала иметь полностью скомпилированный документ, чтобы все
 % промежуточные файлы были в наличии
@@ -63,6 +86,8 @@
 \renewcommand{\figurename}{Рисунок}
 \renewcommand{\tablename}{Таблица}
 
+
+\include{Dissertation/introduction1}    % Введение
 
 \include{Dissertation/introduction}    % Введение
 
