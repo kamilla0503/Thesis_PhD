@@ -1,0 +1,1169 @@
+\documentclass[t,aspectratio=169]{beamer}
+\usetheme{default}
+
+\usepackage{cmap}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amsmath,amsfonts,amssymb,mathtools}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{capt-of}
+\usepackage{hyperref}
+
+\usetikzlibrary{arrows.meta,positioning,calc}
+\graphicspath{{images/}}
+
+\hypersetup{
+  unicode=true,
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue
+}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{itemize item}{\(\blacktriangleright\)}
+\setbeamertemplate{itemize subitem}{\(\triangleright\)}
+\setbeamerfont{frametitle}{size=\large}
+\setbeamerfont{framesubtitle}{size=\small}
+\setbeamerfont{footline}{size=\scriptsize}
+\setbeamerfont{block title}{size=\small}
+\setbeamerfont{block body}{size=\scriptsize}
+\setbeamercolor{block title}{fg=black,bg=gray!15}
+\setbeamercolor{block body}{fg=black,bg=gray!6}
+
+\newcommand{\E}{\mathcal E}
+\newcommand{\Usaw}{\mathcal U}
+\newcommand{\R}{\mathcal R}
+\newcommand{\source}[1]{\vfill{\tiny #1\par}}
+\newcommand{\twopics}[4]{
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=#1\linewidth]{#2}
+    \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=#3\linewidth]{#4}
+  \end{columns}
+}
+
+\title{Численное исследование спиновых моделей на динамических структурах}
+\subtitle{Модель Изинга и XY-модель на блужданиях без самопересечений}
+\author{Файзуллина Камилла}
+\institute{Научный руководитель: Л.Н. Щур}
+\date{}
+
+\AtBeginSection[]{
+  \begin{frame}{Логика доклада}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Центральный вопрос}
+  \large
+  Что происходит с магнитным фазовым переходом, если спины живут не на фиксированной регулярной решетке, а на полимерной цепочке, геометрия которой сама является термодинамической степенью свободы?
+
+  \vspace{1em}
+  \normalsize
+  \begin{columns}[T,onlytextwidth]
+    \column{0.32\textwidth}
+    \begin{block}{Спины}
+      Изинг: \(s_i=\pm1\).\\
+      XY: \(\theta_i\in(-\pi,\pi]\).
+    \end{block}
+    \column{0.32\textwidth}
+    \begin{block}{Геометрия}
+      Блуждание без самопересечений \(u\in\Usaw_N\).\\
+      Цепочка может быть клубком или глобулой.
+    \end{block}
+    \column{0.32\textwidth}
+    \begin{block}{Связь}
+      Контакты меняют энергию спинов.\\
+      Спины меняют статистику контактов.
+    \end{block}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Маршрут на 60 минут}
+  \small
+  \begin{tabularx}{\textwidth}{@{}lX@{}}
+    \toprule
+    0--10 мин & Классические модели: Изинг, XY, БКТ, \(\Theta\)-переход полимера. \\
+    10--18 мин & Разработанность темы: от магнитных полимеров к Potts, BEG и новым двумерным/двухблочным направлениям. \\
+    18--30 мин & Модель и численные методы: MCMC, смена соединений, кластерный шаг, обмен репликами, перевзвешивание. \\
+    30--42 мин & Изинг на БСП: совместный непрерывный структурно-магнитный переход в 2D. \\
+    42--54 мин & XY на БСП: разделение переходов в 2D и признаки первого рода в 3D. \\
+    54--60 мин & Синтез, новизна, положения, будущие планы. \\
+    \bottomrule
+  \end{tabularx}
+
+  \vspace{0.8em}
+  \begin{block}{Научная история}
+    Не ``практическая значимость'', а механизм: как симметрия спина, размерность и динамическая геометрия вместе определяют фазовую картину.
+  \end{block}
+\end{frame}
+
+\section{Классические модели и переходы}
+
+\begin{frame}{Модель Изинга: дискретная симметрия}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+    \small
+    \[
+      H_{\mathrm{Ising}}
+      = -J\sum_{\langle i,j\rangle} s_i s_j,\qquad
+      s_i=\pm1 .
+    \]
+    \begin{itemize}
+      \item Параметр порядка: \(m=N^{-1}\sum_i s_i\).
+      \item В 2D на квадратной решетке есть точное решение.
+      \item При \(T<T_c\): ферромагнитный порядок.
+      \item При \(T>T_c\): парамагнитный режим.
+    \end{itemize}
+    \column{0.48\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.75]
+      \foreach \x in {0,...,5}{
+        \foreach \y in {0,...,4}{
+          \draw[gray!35] (\x,\y) -- ++(1,0);
+          \draw[gray!35] (\x,\y) -- ++(0,1);
+        }
+      }
+      \foreach \x in {0,...,6}{
+        \foreach \y in {0,...,5}{
+          \pgfmathtruncatemacro{\up}{mod(\x+\y,3)}
+          \ifnum\up=0
+            \draw[very thick,blue!70!black,-{Latex[length=2mm]}] (\x,\y-0.22) -- (\x,\y+0.22);
+          \else
+            \draw[very thick,red!70!black,-{Latex[length=2mm]}] (\x,\y+0.22) -- (\x,\y-0.22);
+          \fi
+        }
+      }
+      \node[font=\scriptsize] at (3,-0.7) {локальные взаимодействия ближайших соседей};
+    \end{tikzpicture}
+  \end{columns}
+  \source{E. Ising, Z. Phys. 31, 253--258 (1925); L. Onsager, Phys. Rev. 65, 117--149 (1944).}
+\end{frame}
+
+\begin{frame}{Классический переход Изинга}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \begin{block}{Что видно в численном эксперименте}
+      \begin{itemize}
+        \item Пересечения кумулянта Биндера \(U_4\).
+        \item Рост пика теплоемкости \(c_V\).
+        \item Масштабирование намагниченности и восприимчивости.
+        \item Для первого рода: бимодальные распределения энергии.
+      \end{itemize}
+    \end{block}
+    \[
+      U_4=1-\frac{\langle m^4\rangle}
+      {3\langle m^2\rangle^2},
+      \qquad
+      c_V=\frac{1}{N}\left(\langle H^2\rangle-\langle H\rangle^2\right).
+    \]
+
+    \column{0.48\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.85]
+      \draw[->] (0,0) -- (5.4,0) node[right] {\scriptsize \(T\)};
+      \draw[->] (0,0) -- (0,3.4) node[above] {\scriptsize \(m\)};
+      \draw[thick,blue!70!black] plot[smooth] coordinates {(0.3,3.0) (1.2,2.8) (2.0,2.3) (2.8,1.4) (3.15,0.4) (3.3,0.05)};
+      \draw[thick,blue!70!black] (3.3,0.05) -- (5.0,0.05);
+      \draw[dashed] (3.3,0) -- (3.3,3.0);
+      \node[font=\scriptsize] at (3.3,-0.35) {\(T_c\)};
+      \node[font=\scriptsize,align=center] at (1.35,0.65) {упорядоченная\\фаза};
+      \node[font=\scriptsize,align=center] at (4.35,0.65) {парамагнитная\\фаза};
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{XY-модель: непрерывная симметрия}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+    \small
+    \[
+      H_{XY}=-J\sum_{\langle i,j\rangle}\cos(\theta_i-\theta_j),
+      \qquad
+      \vec s_i=(\cos\theta_i,\sin\theta_i).
+    \]
+    \begin{itemize}
+      \item Симметрия \(O(2)\), параметр порядка в конечной системе:
+      \[
+        m=\frac{1}{N}\sqrt{\left(\sum_i\cos\theta_i\right)^2+
+        \left(\sum_i\sin\theta_i\right)^2}.
+      \]
+      \item В 2D обычного дальнего порядка нет.
+      \item Вместо обычного перехода возникает БКТ-сценарий.
+    \end{itemize}
+    \column{0.48\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.75]
+      \foreach \x in {0,...,6}{
+        \foreach \y in {0,...,5}{
+          \fill[gray!25] (\x,\y) circle (0.025);
+          \pgfmathsetmacro{\ang}{25*\x+35*\y+10*sin(30*\x)}
+          \draw[very thick,teal!70!black,-{Latex[length=2mm]}]
+            (\x,\y) -- ++(\ang:0.35);
+        }
+      }
+      \node[font=\scriptsize] at (3,-0.7) {угловые степени свободы};
+    \end{tikzpicture}
+  \end{columns}
+  \source{J. M. Kosterlitz and D. J. Thouless, J. Phys. C 6, 1181 (1973); В. Л. Березинский, ЖЭТФ (1970, 1971).}
+\end{frame}
+
+\begin{frame}{БКТ-переход: не обычная критическая точка}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \column{0.46\textwidth}
+    \begin{block}{Физическая картина}
+      \begin{itemize}
+        \item При низких \(T\): связанные пары вихрь-антивихрь.
+        \item При высоких \(T\): свободные вихри разрушают квазидальний порядок.
+        \item Корреляционная длина расходится экспоненциально, а не степенно.
+      \end{itemize}
+    \end{block}
+    \[
+      G(r)\sim r^{-\eta},\qquad
+      \eta(T_{\mathrm{BKT}})=\frac14.
+    \]
+    \[
+      \xi \sim \exp\!\left(\frac{b}{\sqrt{|T-T_{\mathrm{BKT}}|}}\right).
+    \]
+    \column{0.54\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.86]
+      \draw[->] (0,0) -- (5.6,0) node[right] {\scriptsize \(T\)};
+      \draw[->] (0,0) -- (0,3.3) node[above] {\scriptsize корреляции};
+      \draw[thick,teal!70!black] (0.3,2.7) .. controls (1.5,2.4) and (2.5,1.8) .. (3.1,0.9);
+      \draw[thick,red!70!black] (3.1,0.9) .. controls (3.7,0.35) and (4.7,0.18) .. (5.2,0.13);
+      \draw[dashed] (3.1,0) -- (3.1,3.0);
+      \node[font=\scriptsize] at (3.1,-0.35) {\(T_{\mathrm{BKT}}\)};
+      \node[font=\scriptsize,align=center] at (1.4,0.75) {квазидальний\\порядок};
+      \node[font=\scriptsize,align=center] at (4.45,0.75) {экспоненциальный\\спад};
+      \draw[blue!70!black,thick] (1.1,2.2) circle (0.35);
+      \draw[blue!70!black,thick] (1.8,2.2) circle (0.35);
+      \node[font=\scriptsize] at (1.45,2.8) {пара};
+      \draw[red!70!black,thick] (4.1,2.15) circle (0.35);
+      \draw[red!70!black,thick] (5.0,1.65) circle (0.35);
+      \node[font=\scriptsize] at (4.55,2.75) {свободные вихри};
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Полимер: блуждание без самопересечений}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    \small
+    Геометрия линейного полимера длины \(N\) задается БСП:
+    \[
+      u=(r_1,\dots,r_N),\qquad r_i\ne r_j \ (i\ne j).
+    \]
+    Размер цепи:
+    \[
+      \langle R_N^2\rangle \sim N^{2\nu}.
+    \]
+    \begin{tabular}{@{}lcc@{}}
+      \toprule
+      режим & 2D & 3D \\
+      \midrule
+      хорош. растворитель & \(3/4\) & \(\simeq0.588\) \\
+      \(\Theta\)-точка & \(4/7\) & \(1/2\) \\
+      глобула & \(1/2\) & \(1/3\) \\
+      \bottomrule
+    \end{tabular}
+    \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=0.6\linewidth]{homopolymer.png}
+    \vspace{0.5em}
+
+    \scriptsize
+    Переход клубок-глобула:
+    \[
+      \frac{\langle R_N^2\rangle}{N^{2\nu_\Theta}}
+      =
+      \R\!\left((J-J_\Theta)N^{\phi_\Theta}\right).
+    \]
+  \end{columns}
+  \source{P.-G. de Gennes, Scaling Concepts in Polymer Physics (1979); Duplantier and Saleur, Phys. Rev. Lett. 59, 539 (1987).}
+\end{frame}
+
+\begin{frame}{Почему объединение моделей не является суммой частей}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \begin{block}{На регулярной решетке}
+      Связи фиксированы: каждое изменение спиновой конфигурации происходит на одном и том же графе.
+    \end{block}
+    \begin{block}{На БСП}
+      Связи флуктуируют: число топологических контактов само является случайной величиной и зависит от \(J\).
+    \end{block}
+    \column{0.52\textwidth}
+    \centering
+    \begin{tikzpicture}[
+      node distance=0.9cm,
+      box/.style={draw,rounded corners=1pt,align=center,minimum width=3.2cm,minimum height=0.75cm,font=\scriptsize}
+    ]
+      \node[box] (spin) {спиновая энергия\\\(-J e_{ij}\)};
+      \node[box,below=of spin] (contacts) {число контактов\\\(C(u)\)};
+      \node[box,below=of contacts] (geom) {геометрия цепи\\\(R^2, R_g^2\)};
+      \draw[-{Latex[length=2mm]},thick] (spin) -- node[right,font=\tiny] {стабилизирует} (contacts);
+      \draw[-{Latex[length=2mm]},thick] (contacts) -- node[right,font=\tiny] {уплотняет} (geom);
+      \draw[-{Latex[length=2mm]},thick,bend left=45] (geom.east) to node[right,font=\tiny] {меняет граф} (spin.east);
+    \end{tikzpicture}
+  \end{columns}
+  \vspace{0.5em}
+  \begin{block}{Рабочая гипотеза}
+    Симметрия спина определяет, насколько сильно магнитное упорядочение привязано к компактизации цепи.
+  \end{block}
+\end{frame}
+
+\section{Разработанность темы}
+
+\begin{frame}{Магнитные полимеры: две постановки беспорядка}
+  \small
+  \[
+    Z_N=\sum_{u\in\Usaw_N}\sum_{s\in\mathcal S}
+    \exp[-H(s,u)].
+  \]
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \begin{block}{Замороженная геометрия}
+      \begin{itemize}
+        \item Сначала генерируется ансамбль БСП.
+        \item Потом на каждой фиксированной конфигурации моделируются спины.
+        \item Геометрия не реагирует на магнитное упорядочение.
+      \end{itemize}
+    \end{block}
+    \column{0.48\textwidth}
+    \begin{block}{Разбавленный беспорядок}
+      \begin{itemize}
+        \item Геометрия и спины входят в один ансамбль.
+        \item Контакты возникают и исчезают вместе со спиновыми флуктуациями.
+        \item Это постановка данной диссертации.
+      \end{itemize}
+    \end{block}
+  \end{columns}
+  \source{Chakrabarti and Bhattacharya, J. Phys. C 16, L1025 (1983); Chakrabarti, Maggs and Stinchcombe, J. Phys. A 18, L373 (1985).}
+\end{frame}
+
+\begin{frame}{Что было известно до этой работы}
+  \scriptsize
+  \begin{tabularx}{\textwidth}{@{}p{0.18\textwidth}p{0.32\textwidth}X@{}}
+    \toprule
+    Работа & Модель & Основной вывод \\
+    \midrule
+    Garel--Orland--Orlandini, 1999
+    & Изинг/Гейзенберг на 3D БСП
+    & Среднее поле: магнитно-индуцированный коллапс; при малом поле переход первого рода. \\
+    Foster--Majumdar, 2021
+    & Изинг на 2D/3D БСП
+    & 3D: совместный переход первого рода; 2D: непрерывный переход. \\
+    Faizullina--Pchelintsev--Burovski, 2021
+    & Изинг на 2D БСП
+    & Геометрические и магнитные критические свойства вблизи клубок-глобула. \\
+    Papale--Rosa, 2018
+    & Изинг на развернутых и компактных полимерах
+    & Для магнитного порядка нужна достаточно плотная контактная структура. \\
+    \bottomrule
+  \end{tabularx}
+  \vspace{0.7em}
+  \begin{block}{Пробел}
+    Почти все детально изученные модели имели дискретные спины. Непрерывная XY-симметрия на динамической полимерной геометрии была открытым случаем.
+  \end{block}
+  \source{Garel et al., EPJ B 12, 261 (1999); Foster and Majumdar, Phys. Rev. E 104, 024122 (2021); Faizullina et al., Phys. Rev. E 104, 054501 (2021).}
+\end{frame}
+
+\begin{frame}{Куда ушло поле в последние годы}
+  \scriptsize
+  \begin{tabularx}{\textwidth}{@{}p{0.25\textwidth}p{0.25\textwidth}X@{}}
+    \toprule
+    Направление & Представительная работа & Что добавилось \\
+    \midrule
+    Аналитические решеточные приближения
+    & Rodrigues--Oliveira, PRE 2022
+    & Изинг- и Potts-подобные магнитные полимеры на решетке Бете; три фазы и линии переходов. \\
+    Фрактальные носители
+    & Elezovic-Hadzic et al., PRE 2023; PRE 2025
+    & Изинг на фрактальной решетке Серпинского; возвратное поведение и влияние внешнего поля. \\
+    Potts-модель хроматина
+    & Nakanishi--Hukushima, PRE 2024
+    & Компактная неупорядоченная фаза за счет энергетического сдвига. \\
+    BEG-модель
+    & Raiola--Locatelli--Marenduzzo--Orlandini, Soft Matter 2025
+    & Три фазы и мультикритические точки в модели со спинами \(0,\pm1\). \\
+    Двухблочные/двухцепочечные мотивы
+    & Raiola et al., arXiv 2026
+    & Ferro/antiferro diblock copolymer: смешанная, сегрегированная и ``tadpole'' фазы под полем. \\
+    \bottomrule
+  \end{tabularx}
+  \source{Rodrigues and Oliveira, PRE 106, 024130 (2022); Nakanishi and Hukushima, PRE 109, 014405 (2024); Raiola et al., Soft Matter 21, 5296 (2025); Raiola et al., arXiv:2602.22382 (2026).}
+\end{frame}
+
+\begin{frame}{Место диссертации в этой линии}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    \begin{block}{Внешний контекст}
+      Поле ушло от одной изинговской цепи к более богатым внутренним состояниям: Potts, BEG, хроматин, блок-сополимеры, внешние поля.
+    \end{block}
+    \begin{block}{Здесь}
+      Систематически изучается другая ось обобщения: переход от дискретной симметрии Изинга к непрерывной XY-симметрии на той же динамической геометрии.
+    \end{block}
+    \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[
+      box/.style={draw,align=center,rounded corners=1pt,font=\scriptsize,minimum width=2.45cm,minimum height=0.65cm}
+    ]
+      \node[box] (ising) at (0,0) {Изинг\\\(Z_2\)};
+      \node[box] (xy) at (3.1,0) {XY\\\(O(2)\)};
+      \node[box] (potts) at (0,-1.4) {Potts\\\(q\) состояний};
+      \node[box] (beg) at (3.1,-1.4) {BEG\\\(0,\pm1\)};
+      \node[box,minimum width=5.6cm] (future) at (1.55,-2.8) {будущее: clock \(Z_q\), дальнодействие, две цепи/блоки};
+      \draw[-{Latex[length=2mm]},thick] (ising) -- (xy);
+      \draw[-{Latex[length=2mm]},thick] (ising) -- (potts);
+      \draw[-{Latex[length=2mm]},thick] (potts) -- (beg);
+      \draw[-{Latex[length=2mm]},thick] (xy) -- (future);
+      \draw[-{Latex[length=2mm]},thick] (beg) -- (future);
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+\section{Модели и методы}
+
+\begin{frame}{Общая постановка}
+  \small
+  Полимерная конфигурация \(u\) задает множество взаимодействующих пар \(\E(u)\): это пары мономеров, которые являются соседями на регулярной решетке.
+  \[
+    Z_N(J)=\sum_{u\in\Usaw_N}\sum_{s\in\mathcal S}
+    \exp\!\left[J\sum_{(i,j)\in\E(u)} e_{ij}\right].
+  \]
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \begin{block}{Модель Изинга}
+      \[
+        e_{ij}=s_i s_j,\qquad s_i=\pm1.
+      \]
+      Дискретная симметрия, обычный параметр порядка \(m\).
+    \end{block}
+    \column{0.48\textwidth}
+    \begin{block}{XY-модель}
+      \[
+        e_{ij}=\cos(\theta_i-\theta_j),\qquad \theta_i\in(-\pi,\pi].
+      \]
+      Непрерывная симметрия, в 2D ожидается БКТ-подобная логика.
+    \end{block}
+  \end{columns}
+  \source{В диссертации: главы 1, 3, 4.}
+\end{frame}
+
+\begin{frame}{Геометрия взаимодействий: не все мономеры соседи}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.45\textwidth}
+    \small
+    На БСП у мономера есть два связных соседа вдоль цепи, но магнитная энергия задается пространственными контактами на решетке.
+
+    \vspace{0.7em}
+    \[
+      C(u)=|\E(u)|
+    \]
+    становится важной наблюдаемой:
+    \begin{itemize}
+      \item растет при компактизации;
+      \item коррелирует с магнитным порядком;
+      \item в 3D может показывать двухфазность.
+    \end{itemize}
+    \column{0.55\textwidth}
+    \centering
+    \includegraphics[width=0.55\linewidth]{onlysaw.png}
+    \vspace{0.4em}
+
+    \scriptsize
+    Пример БСП: геометрия разрежена по сравнению с полной решеткой.
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Динамическая HP-модель как вход в задачу}
+  \scriptsize
+  До спиновых моделей был проверен более простой механизм: динамические внутренние состояния мономеров \(H/P\), где энергетический выигрыш дают только контакты \(H-H\).
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \centering
+    \includegraphics[width=0.58\linewidth]{HP_example_cut.png}
+    \[
+      E_u=-\epsilon_b m-\epsilon_a N.
+    \]
+    \column{0.52\textwidth}
+    \centering
+    \includegraphics[width=0.72\linewidth]{ph_hp.png}
+  \end{columns}
+  \begin{block}{Роль в истории}
+    HP-модель показала, что динамические внутренние состояния сдвигают область коллапса и мотивируют переход к каноническому ансамблю с фиксированным \(N\).
+  \end{block}
+  \source{Faizullina and Burovski, J. Phys.: Conf. Ser. 1740, 012014 (2021).}
+\end{frame}
+
+\begin{frame}{HP-модель: геометрический сигнал}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+    \small
+    \begin{itemize}
+      \item При малом \(\epsilon_b\): \(\nu\to 3/4\), режим невзаимодействующего БСП.
+      \item При росте \(\epsilon_b\): цепь уплотняется.
+      \item Область \(\Theta\)-перехода для динамической HP-модели сдвинута к большим \(\epsilon_b\), потому что не каждый контакт энергетически выгоден.
+    \end{itemize}
+    \[
+      1.25 \lesssim \epsilon_{b\Theta}\lesssim 1.27
+    \]
+    по максимуму теплоемкости.
+    \column{0.48\textwidth}
+    \centering
+    \includegraphics[width=0.82\linewidth,height=0.35\textheight,keepaspectratio]{nu_eps_hp.png}
+
+    \includegraphics[width=0.82\linewidth,height=0.35\textheight,keepaspectratio]{new_heat_c1.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{MCMC: три базовых шага}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=0.92\linewidth]{snakeupdate.png}
+    \begin{block}{Змееподобный шаг}
+      Удаление конца и добавление нового мономера на другом конце; новый спин выбирается из своего пространства.
+    \end{block}
+    \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=0.92\linewidth]{reconnect.png}
+    \begin{block}{Смена соединений}
+      Меняет связность цепи без изменения координат; помогает выходить из замороженных состояний.
+    \end{block}
+    \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=0.92\linewidth]{state_example_cluster.png}
+    \begin{block}{Кластерный шаг}
+      Wolff-обновление спинов: резко снижает автокорреляции вблизи магнитного перехода.
+    \end{block}
+  \end{columns}
+  \source{Metropolis et al. (1953); Prokof'ev and Svistunov, PRL 87, 160601 (2001); Wolff, PRL 62, 361 (1989).}
+\end{frame}
+
+\begin{frame}{Расширенная выборка: обмен репликами}
+  \small
+  Одного фиксированного \(J\) недостаточно, когда есть узкая критическая область или признаки первого рода. Поэтому использовались параллельное темперирование и мультигистограммное перевзвешивание.
+  \[
+    A_{\mathrm{swap}}=
+    \min\left\{1,
+    \exp\left[(J_m-J_{m+1})(E(u_m)-E(u_{m+1}))\right]\right\}.
+  \]
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \begin{block}{Что дает обмен репликами}
+      \begin{itemize}
+        \item лучшее прохождение энергетических барьеров;
+        \item один запуск покрывает окно значений \(J\);
+        \item особенно полезен при бимодальности.
+      \end{itemize}
+    \end{block}
+    \column{0.48\textwidth}
+    \begin{block}{Что дает перевзвешивание}
+      \begin{itemize}
+        \item гладкие зависимости \(U_4(J)\), \(R^2(J)\), \(c_V(J)\);
+        \item уточнение пересечений;
+        \item проверка опубликованных выводов на новых данных.
+      \end{itemize}
+    \end{block}
+  \end{columns}
+  \source{Swendsen and Wang, PRL 57, 2607 (1986); Ferrenberg and Swendsen, PRL 63, 1195 (1989).}
+\end{frame}
+
+\begin{frame}{Диагностики фазовых переходов}
+  \scriptsize
+  \begin{tabularx}{\textwidth}{@{}p{0.25\textwidth}p{0.35\textwidth}X@{}}
+    \toprule
+    Наблюдаемая & Формула & Что показывает \\
+    \midrule
+    Размер цепи & \(\langle R_N^2\rangle/N^{2\nu_\Theta}\) & \(\Theta\)-точка через пересечения кривых. \\
+    Кроссовер & \(\partial_J(R^2/N^{2\nu_\Theta})\sim N^{\phi_\Theta}\) & Эффективный показатель ширины критической области. \\
+    Намагниченность & \(m\), \(\langle m^2\rangle\) & Возникновение магнитного порядка. \\
+    Binder & \(U_4=1-\langle m^4\rangle/(3\langle m^2\rangle^2)\) & Пересечения для непрерывного перехода, отрицательный провал для первого рода. \\
+    Распределения & \(P(e)\), \(P(|m|)\), \(P(C/N)\) & Одномодальность против сосуществования фаз. \\
+    Корреляции & \(\rho_P(C,|m|)\), \(\rho_S(C,|m|)\) & Связь геометрии и магнитного порядка. \\
+    \bottomrule
+  \end{tabularx}
+\end{frame}
+
+\section{Модель Изинга на БСП}
+
+\begin{frame}{Изинг на БСП: вопрос}
+  \small
+  \[
+    H(u,s)=-J\sum_{\langle i,j\rangle\in\E(u)}s_i s_j,
+    \qquad s_i=\pm1.
+  \]
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \begin{block}{Ожидание}
+      Дискретные спины должны сильнее связывать магнитное упорядочение с ростом числа контактов.
+    \end{block}
+    \begin{block}{Главная проверка}
+      Совпадают ли \(\Theta\)-точка и магнитная критическая точка?
+    \end{block}
+    \column{0.52\textwidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{state_example.png}
+  \end{columns}
+  \source{Faizullina, Pchelintsev and Burovski, Phys. Rev. E 104, 054501 (2021).}
+\end{frame}
+
+\begin{frame}{Изинг 2D: геометрический переход}
+  \small
+  \[
+    \frac{\langle R_N^2\rangle}{N^{2\nu_\Theta}}
+    =
+    \R((J-J_\Theta)N^{\phi_\Theta}),
+    \qquad
+    \nu_\Theta=\frac47.
+  \]
+  \begin{columns}[T,onlytextwidth]
+    \column{0.55\textwidth}
+    \centering
+    \includegraphics[width=0.95\linewidth]{Ising_2D_rscaling_long_fixed.png}
+    \column{0.45\textwidth}
+    \begin{block}{Оценка}
+      \[
+        J_\Theta \approx 0.833(1).
+      \]
+    \end{block}
+    \begin{itemize}
+      \item Отмасштабированные радиусы пересекаются в узкой области.
+      \item Критический показатель \(\nu_\Theta=4/7\) наследуется от родительского \(\Theta\)-полимера.
+      \item Переход геометрически непрерывный.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Изинг 2D: уточнение на перевзвешенных данных}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{SI_ISing_2D_R2_scaled_nu057_reweight_zoomin.png}
+    \column{0.52\textwidth}
+    \begin{block}{Что изменилось относительно статьи 2021}
+      \begin{itemize}
+        \item Добавлены данные обмена репликами.
+        \item Мультигистограммное перевзвешивание дает гладкие кривые в окрестности перехода.
+        \item Пересечения дают \(J_\Theta=0.8326(35)\).
+      \end{itemize}
+    \end{block}
+    \begin{block}{Кроссоверный показатель}
+      Производные и коллапс дают эффективные значения
+      \[
+        \phi_\Theta\simeq 0.69.
+      \]
+      Это выше \(3/7\), но согласуется с сильными конечномерными поправками и с Foster--Majumdar.
+    \end{block}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Изинг 2D: магнитный переход}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{Ising_2D_U4_long_fixed.png}
+    \column{0.48\textwidth}
+    \[
+      U_4=1-\frac{\langle m^4\rangle}
+      {3\langle m^2\rangle^2}.
+    \]
+    \begin{block}{Оценки}
+      \[
+        J_{\mathrm{cr}}=0.8340(5)
+      \]
+      по прямым данным,
+      \[
+        J_{\mathrm{cr}}\simeq0.8348
+      \]
+      по перевзвешенным пересечениям.
+    \end{block}
+    \begin{itemize}
+      \item Кривые \(U_4\) пересекаются.
+      \item Отрицательного провала нет.
+      \item Магнитный переход непрерывный.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Изинг 2D: распределения подтверждают непрерывность}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{Ising_distrenergy_5000.png}
+    \scriptsize \(N=5000\)
+    \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{triptych_L_Ising_SI_2D_7000.png}
+    \scriptsize \(N=7000\), \(P(e)\), \(P(|m|)\), \(P(C/N)\)
+  \end{columns}
+  \vspace{0.5em}
+  \small
+  Распределения энергии и числа контактов остаются одномодальными: нет признаков латентной теплоты и сосуществования фаз.
+\end{frame}
+
+\begin{frame}{Изинг 2D: итоговая картина}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    \begin{block}{Совпадение критических областей}
+      \[
+        J_\Theta\simeq0.833,\qquad
+        J_{\mathrm{cr}}\simeq0.834.
+      \]
+    \end{block}
+    \begin{itemize}
+      \item Коллапс цепи и магнитное упорядочение происходят вместе.
+      \item Переход непрерывный в доступном диапазоне размеров.
+      \item Геометрический показатель \(\nu_\Theta=4/7\) сохраняется.
+    \end{itemize}
+    \column{0.5\textwidth}
+    \begin{block}{Механизм}
+      Дискретное упорядочение Изинга хорошо конвертирует рост контактной плотности в магнитный выигрыш, поэтому геометрическая и магнитная перестройки синхронизируются.
+    \end{block}
+    \centering
+    \includegraphics[width=0.72\linewidth]{SI_ISing_2D_pearson_reweight.png}
+  \end{columns}
+\end{frame}
+
+\section{XY-модель на БСП}
+
+\begin{frame}{XY на БСП: почему это другая задача}
+  \small
+  \[
+    H(u,\theta)=-J\sum_{\langle i,j\rangle\in\E(u)}
+    \cos(\theta_i-\theta_j).
+  \]
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    \begin{block}{Отличие от Изинга}
+      У непрерывных спинов есть мягкие угловые флуктуации: рост числа контактов не обязан сразу давать жесткий ферромагнитный порядок.
+    \end{block}
+    \begin{block}{В 2D}
+      Нужно отличать обычный магнитный переход от БКТ-подобной критической области.
+    \end{block}
+    \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=0.62\linewidth]{state_glob_1.png}
+    \vspace{0.3em}
+
+    \scriptsize
+    Цвет узлов кодирует углы \(\theta_i\).
+  \end{columns}
+  \source{Faizullina and Burovski, Phys. Rev. E 112, 024107 (2025).}
+\end{frame}
+
+\begin{frame}{XY 2D: структурный переход}
+  \scriptsize
+  \[
+    \nu_\Theta=\frac47,\qquad
+    J_\Theta\approx1.3634\pm0.005.
+  \]
+  \begin{columns}[T,onlytextwidth]
+    \column{0.55\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.55\textheight,keepaspectratio]{SI_XY_2D_r2_scale_long_fixed.png}
+    \column{0.45\textwidth}
+    \begin{itemize}
+      \item Отмасштабированные радиусы сходятся в области \(J\simeq1.36\).
+      \item Класс универсальности геометрии остается \(\Theta\)-подобным.
+      \item На перевзвешенных данных: \(J_\Theta\simeq1.36\)--\(1.37\), \(\phi_\Theta\simeq0.52\).
+    \end{itemize}
+    \centering
+    \includegraphics[width=0.86\linewidth,height=0.28\textheight,keepaspectratio]{SI_XY_2D_R2_scaled_nu057_reweight.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{XY 2D: магнитная область отделена от \(\Theta\)-точки}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \column{0.53\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{SI_XY_2D_U4_long_fixed.png}
+    \column{0.47\textwidth}
+    \begin{block}{По кумулянтам Биндера}
+      \[
+        J_{\mathrm{cr}}\approx1.435\pm0.008
+      \]
+      по прямому моделированию.
+    \end{block}
+    \begin{block}{По перевзвешенным данным}
+      Магнитная область:
+      \[
+        J_{\mathrm{cr}}\simeq1.42.
+      \]
+      Разброс больше, чем в Изинге: сильные конечномерные поправки.
+    \end{block}
+    \[
+      J_\Theta\simeq1.36 < J_{\mathrm{cr}}.
+    \]
+  \end{columns}
+\end{frame}
+
+\begin{frame}{XY 2D: БКТ-подобные признаки}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.42\textheight,keepaspectratio]{eta_vs_J.png}
+    \[
+      \eta(J_{\mathrm{BKT}})=\frac14
+    \]
+    дает \(J_{\eta=1/4}^{\mathrm{eff}}\simeq1.42\).
+    \column{0.52\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.52\textheight,keepaspectratio]{corrs_vs_r_ru1.png}
+  \end{columns}
+  \begin{block}{Корректная формулировка}
+    Данные согласованы с БКТ-подобной областью, но это не строгое доказательство БКТ-перехода: открытые границы и динамическая геометрия не дают прямой диагностики через спиновую жесткость и вихри.
+  \end{block}
+\end{frame}
+
+\begin{frame}{XY 2D: распределения и слабая связь геометрии с магнетизмом}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.60\textheight,keepaspectratio]{triptych_L_XY_SI_2D_4900.png}
+    \scriptsize распределения \(P(e)\), \(P(|m|)\), \(P(C/N)\)
+    \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.30\textheight,keepaspectratio]{SI_XY_2D_pearson_reweight.png}
+    \includegraphics[width=\linewidth,height=0.30\textheight,keepaspectratio]{SI_XY_2D_spearman_reweight.png}
+  \end{columns}
+  Одномодальность распределений и ослабление корреляций \(C\)--\(|m|\) поддерживают сценарий двух раздельных непрерывных перестроек.
+\end{frame}
+
+\begin{frame}{XY 3D: структурная перестройка}
+  \scriptsize
+  \[
+    \nu_\Theta=\frac12,\qquad
+    J_\Theta\approx0.876(5)
+  \]
+  по прямому анализу масштабированных радиусов.
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.53\textheight,keepaspectratio]{SI_XY_3D_r2_long_scale_fixed.png}
+    \column{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.53\textheight,keepaspectratio]{SI_XY_3D_R2_scaled_nu05_reweight_zoomin.png}
+  \end{columns}
+  \begin{block}{Важная оговорка}
+    \(\nu_\Theta=1/2\) описывает масштабирование размера, но не доказывает непрерывность перехода. Для порядка перехода нужно смотреть распределения и кумулянты контактов.
+  \end{block}
+\end{frame}
+
+\begin{frame}{XY 3D: контакты показывают резкую перестройку}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{binder_contacts_centered.png}
+    \column{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{XY_contacts_binder_extrema_extrapolation_ru.png}
+  \end{columns}
+  \vspace{0.4em}
+  \begin{block}{Интерпретация}
+    Отрицательный минимум центрированного кумулянта Биндера для числа контактов углубляется с ростом \(N\). Это признак негауссовых флуктуаций и сосуществования конформаций с разной плотностью контактов.
+  \end{block}
+\end{frame}
+
+\begin{frame}{XY 3D: магнитный переход с признаками первого рода}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \column{0.55\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.58\textheight,keepaspectratio]{SI_XY_3D_U4_long_fixed.png}
+    \column{0.45\textwidth}
+    \begin{itemize}
+      \item В области \(J\simeq0.87\)--\(0.91\) появляется отрицательный минимум \(U_4^{(m)}\).
+      \item Минимум углубляется при росте \(N\).
+      \item Экстраполяции псевдокритических точек дают область \(J\simeq0.87\)--\(0.89\), но конечномерные эффекты велики.
+    \end{itemize}
+    \centering
+    \includegraphics[width=0.88\linewidth,height=0.30\textheight,keepaspectratio]{SI_XY_3D_binder_u3_reweight.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{XY 3D: бимодальные распределения}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{SI_XY_3D_distr_e1_700.png}
+    \scriptsize \(P(e)\), \(N=700\)
+    \column{0.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{triptych_L_XY_SI_3D_700.png}
+    \scriptsize \(P(e)\), \(P(|m|)\), \(P(C/N)\)
+  \end{columns}
+  \small
+  В 3D система посещает два типа состояний: развернутые слабо упорядоченные и компактные более намагниченные. Это качественно отличается от 2D XY.
+\end{frame}
+
+\begin{frame}{2D против 3D в XY-модели}
+  \scriptsize
+  \begin{tabularx}{\textwidth}{@{}p{0.20\textwidth}p{0.36\textwidth}X@{}}
+    \toprule
+    Свойство & 2D квадратная решетка & 3D кубическая решетка \\
+    \midrule
+    Геометрический показатель & \(\nu_\Theta\simeq4/7\) & \(\nu_\Theta\simeq1/2\) \\
+    Геометрическая точка & \(J_\Theta\simeq1.363\) & \(J_\Theta\simeq0.876\) \\
+    Магнитная область & \(J_{\mathrm{cr}}\simeq1.42\)--\(1.44\) & \(J\simeq0.87\)--\(0.91\) \\
+    Связь переходов & Разделены по \(J\) & Сильно сближены, совместная резкая перестройка \\
+    Распределения & Одномодальные & Бимодальные \\
+    Вывод & Непрерывный, БКТ-подобный магнитный переход & Признаки перехода первого рода \\
+    \bottomrule
+  \end{tabularx}
+  \vspace{0.8em}
+  \begin{block}{Главный урок}
+    Непрерывная симметрия сама по себе не задает один универсальный сценарий: размерность и динамическая контактная сеть решают, будет ли геометрия и магнетизм разделены или сцеплены.
+  \end{block}
+\end{frame}
+
+\section{Синтез и вклад}
+
+\begin{frame}{Сводная фазовая история}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    \begin{block}{Изинг 2D}
+      Дискретное упорядочение и компактизация происходят в одной критической области:
+      \[
+        J_\Theta\simeq J_{\mathrm{cr}}\simeq0.834.
+      \]
+    \end{block}
+    \begin{block}{XY 2D}
+      Геометрия перестраивается раньше, чем возникает БКТ-подобная магнитная область:
+      \[
+        J_\Theta\simeq1.36,\quad J_{\mathrm{BKT}}^{\mathrm{eff}}\simeq1.42.
+      \]
+    \end{block}
+    \column{0.5\textwidth}
+    \begin{block}{XY 3D}
+      Контакты и намагниченность сильно сцеплены; распределения показывают двухфазность:
+      \[
+        J\simeq0.87\text{--}0.91.
+      \]
+    \end{block}
+    \begin{block}{Общий вывод}
+      Динамическая геометрия не просто ``шум'' для спиновой модели. Она активный участник фазового перехода.
+    \end{block}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Научная новизна}
+  \small
+  \begin{itemize}
+    \item Разработан и реализован численный подход для совместного моделирования спиновых и геометрических степеней свободы на БСП.
+    \item Для модели Изинга на 2D БСП подтверждена совместность структурного и магнитного переходов и уточнены оценки с использованием обмена репликами и перевзвешивания.
+    \item Впервые численно исследована XY-модель на БСП в 2D и 3D.
+    \item Показано, что XY-модель сохраняет геометрическую \(\Theta\)-универсальность родительского полимера, но меняет связь между геометрией и магнитным порядком.
+    \item Для 2D XY получена картина раздельных переходов и БКТ-подобной магнитной области.
+    \item Для 3D XY обнаружены устойчивые признаки перехода первого рода: отрицательные провалы кумулянтов и бимодальные распределения.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Положения, выносимые на защиту: Изинг}
+  \small
+  \begin{enumerate}
+    \item Численно исследована модель Изинга на динамических структурах, генерируемых блужданиями без самопересечений на регулярной решетке.
+    \item Для квадратной решетки структурный переход клубок-глобула и магнитный переход происходят в одной критической области.
+    \item Магнитный переход в двумерной модели Изинга на БСП имеет непрерывный характер.
+    \item Геометрический критический показатель в области перехода наследуется от родительской модели гомополимера: \(\nu_\Theta=4/7\).
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Положения, выносимые на защиту: XY}
+  \small
+  \begin{enumerate}
+    \item Впервые численно исследована XY-модель на блужданиях без самопересечений на квадратной и кубической решетках.
+    \item В обеих размерностях обнаружен структурный переход клубок-глобула с геометрическим показателем родительской полимерной модели: \(4/7\) в 2D и \(1/2\) в 3D.
+    \item В двумерной XY-модели структурный и магнитный переходы разделены по параметру взаимодействия; магнитная область согласована с БКТ-подобной картиной.
+    \item В трехмерной XY-модели магнитный переход и структурная перестройка демонстрируют признаки перехода первого рода.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Что это говорит о механизме}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \begin{block}{Дискретные спины}
+      Контакты быстро стабилизируют одинаковые \(s_i\). Поэтому в Изинге геометрия и магнетизм синхронизируются.
+    \end{block}
+    \begin{block}{Непрерывные спины в 2D}
+      Угловые флуктуации позволяют цепи уже стать компактной, но не дают обычного дальнего порядка; появляется БКТ-подобная область.
+    \end{block}
+    \column{0.48\textwidth}
+    \begin{block}{Непрерывные спины в 3D}
+      Компактность резко увеличивает контактную сеть; магнитное упорядочение и геометрия начинают усиливать друг друга, что приводит к двухфазности.
+    \end{block}
+    \begin{block}{В одном предложении}
+      Тип спина задает магнитную мягкость, а размерность задает цену компактизации.
+    \end{block}
+  \end{columns}
+\end{frame}
+
+\section{Идеи и будущие планы}
+
+\begin{frame}{Будущее 1: дальнодействующая XY-модель}
+  \scriptsize
+  Ближайшее естественное расширение:
+  \[
+    H_{\mathrm{LR}}(u,\theta)=
+    -J\sum_{i<j}K(r_{ij})\cos(\theta_i-\theta_j),
+    \qquad
+    K(r)\sim r^{-(d+\sigma)}.
+  \]
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \begin{block}{Почему это важно}
+      Короткодействующая модель использует только ближайшие пространственные контакты. Реальные магнитные или эпигенетические взаимодействия могут быть эффективнее описаны дальнодействующим ядром.
+    \end{block}
+    \column{0.48\textwidth}
+    \begin{block}{Главный вопрос}
+      При каком \(\sigma\) 2D XY на БСП перестает быть БКТ-подобной и переходит к обычному или первородному сценарию?
+    \end{block}
+  \end{columns}
+  \centering
+  \includegraphics[width=0.55\linewidth,height=0.34\textheight,keepaspectratio]{longrangeshortchains_3D_U4_No1stordersigns_delta_E.png}
+\end{frame}
+
+\begin{frame}{Будущее 2: clock-модели \(Z_q\)}
+  \small
+  \[
+    \theta_i\in\left\{0,\frac{2\pi}{q},\dots,\frac{2\pi(q-1)}{q}\right\}.
+  \]
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \begin{block}{Почему это хороший мост}
+      \begin{itemize}
+        \item \(q=2\): Изинг.
+        \item \(q\to\infty\): XY.
+        \item При промежуточных \(q\) можно проследить, где появляется разделение переходов.
+      \end{itemize}
+    \end{block}
+    \column{0.48\textwidth}
+    \begin{block}{План}
+      Построить фазовую диаграмму в координатах \((q,J)\): линии \(\Theta\)-перехода, магнитного перехода и область совпадения/расщепления.
+    \end{block}
+  \end{columns}
+  \begin{block}{Научный смысл}
+    Это прямой тест гипотезы: непрерывность внутренней симметрии ослабляет сцепление геометрии и магнетизма.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Будущее 3: две цепочки, блоки и хроматин}
+  \small
+  Свежие работы двигаются к более сложной внутренней структуре: Potts/BEG-состояния, нейтральные метки, две фазы контактов, блоки с разными магнитными взаимодействиями.
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \begin{block}{Двухцепочечная постановка}
+      Две БСП или две связанные части цепи могут иметь разные типы взаимодействий и конкурировать за контакты.
+    \end{block}
+    \begin{block}{Diblock-идея}
+      Ferro-взаимодействие внутри блоков и antiferro-взаимодействие между блоками дают сегрегацию, смешанную глобулу и гибридные фазы.
+    \end{block}
+    \column{0.48\textwidth}
+    \begin{block}{Что можно взять из диссертации}
+      Уже есть инфраструктура: динамическая геометрия, контакты, обмен репликами, диагностика распределений и корреляций.
+    \end{block}
+    \begin{block}{Что нужно добавить}
+      Новые ходы для двух цепей/блоков, контроль переплетения и контактные карты.
+    \end{block}
+  \end{columns}
+  \source{Raiola, Locatelli, Marenduzzo and Orlandini, arXiv:2602.22382 (2026).}
+\end{frame}
+
+\begin{frame}{Будущее 4: вычислительная стратегия}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \begin{block}{Методические ограничения сейчас}
+      \begin{itemize}
+        \item длинные автокорреляции в глобуле;
+        \item сильные конечномерные поправки;
+        \item 3D требует намного больших \(N\);
+        \item БКТ-диагностика на открытой динамической геометрии неполна.
+      \end{itemize}
+    \end{block}
+    \column{0.48\textwidth}
+    \begin{block}{План усиления}
+      \begin{itemize}
+        \item GPU/многорепличные расчеты;
+        \item адаптивный выбор сетки \(J_m\);
+        \item более точные распределения в 3D;
+        \item новые наблюдаемые для топологических дефектов XY.
+      \end{itemize}
+    \end{block}
+  \end{columns}
+  \begin{block}{Практическая цель для следующих работ}
+    Не просто увеличить статистику, а закрыть слабые места вывода: порядок 3D-перехода и статус БКТ-подобной области в 2D.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Публикации по теме}
+  \scriptsize
+  \begin{enumerate}
+    \item K. Faizullina, E. Burovski, ``Globule-coil transition in the dynamic HP model'', \textit{Journal of Physics: Conference Series} 1740, 012014 (2021).
+    \item K. Faizullina, I. Pchelintsev, E. Burovski, ``Critical and geometric properties of magnetic polymers across the globule-coil transition'', \textit{Physical Review E} 104, 054501 (2021).
+    \item K. Faizullina, E. Burovski, ``XY model on a self-avoiding walk'', \textit{Physical Review E} 112, 024107 (2025).
+    \item K. Faizullina, E. Burovski, ``XY model on self-avoiding walks: a large-scale Monte Carlo study'', Суперкомпьютерные дни в России, 24--30 (2022).
+  \end{enumerate}
+  \vspace{0.8em}
+  \begin{block}{Как они складываются}
+    HP-модель дала стартовую проверку динамических внутренних состояний; статья 2021 закрыла изинговский случай в 2D; статья 2025 открыла XY-направление и дала основной новый результат диссертации.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Заключение}
+  \large
+  Диссертация показывает, что спиновая модель на динамическом полимерном носителе не сводится ни к спиновой модели на решетке, ни к обычному гомополимеру.
+
+  \vspace{0.8em}
+  \normalsize
+  \begin{itemize}
+    \item В Изинге 2D геометрия и магнетизм идут вместе.
+    \item В XY 2D они разделяются, а магнитная область выглядит БКТ-подобной.
+    \item В XY 3D они снова сцепляются, но уже с признаками первого рода.
+  \end{itemize}
+
+  \vspace{0.8em}
+  \begin{block}{Главный результат}
+    Симметрия спиновых степеней свободы и размерность определяют, как динамическая геометрия превращает контактную сеть полимера в магнитный фазовый переход.
+  \end{block}
+\end{frame}
+
+\begin{frame}[plain]
+  \centering
+  \vspace{2.5cm}
+  {\Large Спасибо за внимание}
+
+  \vspace{1cm}
+  {\small Вопросы}
+\end{frame}
+
+\end{document}
